@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
       title: title?.trim() || "",
       status: "downloading",
       order: 0,
+      updatedAt: new Date().toISOString(),
     })
     .select()
     .single();
