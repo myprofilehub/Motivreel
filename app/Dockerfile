@@ -23,8 +23,6 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# Generate Prisma Client (needs dummy env vars just to validate schema)
-RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" DIRECT_URL="postgresql://dummy:dummy@localhost:5432/dummy" npx prisma generate
 # Build Next.js app
 ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build

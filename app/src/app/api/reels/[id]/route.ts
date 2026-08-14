@@ -1,9 +1,8 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { getAdminSession } from "@/lib/auth";
 import { deleteVideoFiles } from "@/lib/downloader";
-
 
 // DELETE /api/reels/[id] — admin only
 export async function DELETE(
@@ -21,13 +20,14 @@ export async function DELETE(
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  try {
-    await prisma.reel.delete({ where: { id: reelId } });
-    deleteVideoFiles(reelId); // remove video + thumbnail from disk
-    return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: "Reel not found" }, { status: 404 });
+  const { error } = await supabase.from("Reel").delete().eq("id", reelId);
+  
+  if (error) {
+    return NextResponse.json({ error: "Reel not found or delete failed" }, { status: 404 });
   }
+  
+  deleteVideoFiles(reelId); // remove video + thumbnail from disk
+  return NextResponse.json({ success: true });
 }
 
 // PATCH /api/reels/[id] — admin only (update title or order)
@@ -44,16 +44,19 @@ export async function PATCH(
   const reelId = parseInt(id);
   const body = await req.json();
 
-  try {
-    const updated = await prisma.reel.update({
-      where: { id: reelId },
-      data: {
-        ...(body.title !== undefined && { title: body.title }),
-        ...(body.order !== undefined && { order: body.order }),
-      },
-    });
-    return NextResponse.json(updated);
-  } catch {
+  const { data: updated, error } = await supabase
+    .from("Reel")
+    .update({
+      ...(body.title !== undefined && { title: body.title }),
+      ...(body.order !== undefined && { order: body.order }),
+    })
+    .eq("id", reelId)
+    .select()
+    .single();
+
+  if (error) {
     return NextResponse.json({ error: "Update failed" }, { status: 500 });
   }
+
+  return NextResponse.json(updated);
 }
