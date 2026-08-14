@@ -12,6 +12,7 @@
     "@supabase/supabase-js": "^2.112.3",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
+    "instagram-url-direct": "^2.0.7",
     "jose": "^6.2.8",
     "next": "16.3.1",
     "react": "19.2.8",

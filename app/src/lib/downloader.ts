@@ -38,7 +38,7 @@ export async function downloadVideo(
   // - Write thumbnail as jpg
   // - No playlist
   // - Merge into mp4
-  const cmd = [
+  const cmdArgs = [
     YTDLP,
     `"${url}"`,
     `-f "bestvideo[ext=mp4][height<=720]+bestaudio[ext=m4a]/bestvideo[height<=720]+bestaudio/best[height<=720]/best"`,
@@ -51,7 +51,13 @@ export async function downloadVideo(
     `--quiet`,
     `--print title`,
     `--no-simulate`,
-  ].join(" ");
+  ];
+
+  if (process.env.INSTAGRAM_SESSION_ID && url.includes("instagram.com")) {
+    cmdArgs.push(`--add-header "Cookie: sessionid=${process.env.INSTAGRAM_SESSION_ID}"`);
+  }
+
+  const cmd = cmdArgs.join(" ");
 
   let title = "";
   try {
