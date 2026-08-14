@@ -5,13 +5,14 @@ import fs from "fs";
 
 const execAsync = promisify(exec);
 
-const YTDLP = "/home/mg/.local/bin/yt-dlp";
+// Use yt-dlp installed globally in the Docker image
+const YTDLP = "yt-dlp";
 const VIDEO_DIR = path.join(process.cwd(), "public", "videos");
 const THUMB_DIR = path.join(process.cwd(), "public", "thumbnails");
 
 // Ensure output directories exist
 [VIDEO_DIR, THUMB_DIR].forEach((dir) => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(/*turbopackIgnore: true*/ dir)) fs.mkdirSync(/*turbopackIgnore: true*/ dir, { recursive: true });
 });
 
 export interface DownloadResult {
@@ -58,7 +59,7 @@ export async function downloadVideo(
     title = stdout.trim().split("\n")[0] || "";
   } catch (err) {
     // yt-dlp prints title to stdout even on some warnings — check if file exists
-    if (!fs.existsSync(videoOut)) {
+    if (!fs.existsSync(/*turbopackIgnore: true*/ videoOut)) {
       throw new Error(`yt-dlp failed: ${(err as Error).message}`);
     }
   }
@@ -68,9 +69,9 @@ export async function downloadVideo(
   const possibleThumbs = [thumbOut, thumbOut.replace(".jpg", ".webp"), thumbOut.replace(".jpg", ".png")];
   for (const tp of possibleThumbs) {
     // yt-dlp names thumb as <baseName>.jpg after --convert-thumbnails
-    if (fs.existsSync(tp)) {
+    if (fs.existsSync(/*turbopackIgnore: true*/ tp)) {
       // Rename to standard .jpg if needed
-      if (tp !== thumbOut) fs.renameSync(tp, thumbOut);
+      if (tp !== thumbOut) fs.renameSync(/*turbopackIgnore: true*/ tp, thumbOut);
       thumbPath = `/thumbnails/${baseName}.jpg`;
       break;
     }
@@ -78,7 +79,7 @@ export async function downloadVideo(
 
   // Also check yt-dlp's default thumbnail name pattern (it may add the video ID)
   if (thumbPath === "/thumbnails/placeholder.jpg") {
-    const files = fs.readdirSync(THUMB_DIR);
+    const files = fs.readdirSync(/*turbopackIgnore: true*/ THUMB_DIR);
     const match = files.find((f) => f.startsWith(baseName));
     if (match) thumbPath = `/thumbnails/${match}`;
   }
@@ -102,7 +103,7 @@ export function deleteVideoFiles(reelId: number) {
   ];
   for (const f of toDelete) {
     try {
-      if (fs.existsSync(f)) fs.unlinkSync(f);
+      if (fs.existsSync(/*turbopackIgnore: true*/ f)) fs.unlinkSync(/*turbopackIgnore: true*/ f);
     } catch {
       // ignore
     }
