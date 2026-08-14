@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:motivreel_app/models/reel.dart';
 
 class ApiService {
-  // Use the local IP of the Next.js server
-  static const String baseUrl = 'http://192.168.31.17:3001/api';
+  // Use the deployed Render URL for all API requests
+  static const String baseUrl = 'https://motivreel.onrender.com/api';
 
   Future<List<Reel>> fetchReadyReels() async {
     final response = await http.get(Uri.parse('$baseUrl/reels'));
@@ -19,9 +19,9 @@ class ApiService {
     }
   }
 
-  // Returns the absolute URL for the video since the backend returns relative paths like "/videos/file.mp4"
+  // Use the deployed Render URL for fetching the actual video files
   static String getVideoUrl(String videoPath) {
     if (videoPath.startsWith('http')) return videoPath;
-    return 'http://192.168.31.17:3001$videoPath';
+    return 'https://motivreel.onrender.com$videoPath';
   }
 }
