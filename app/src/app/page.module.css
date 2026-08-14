@@ -1,0 +1,588 @@
+/* ─── Root ──────────────────────────────────────────────────────── */
+.root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+
+/* ─── Background layers ─────────────────────────────────────────── */
+.bgGradient {
+  position: fixed;
+  inset: 0;
+  background: var(--gradient-bg);
+  opacity: 0.7;
+  z-index: 0;
+}
+
+.bgOrb1 {
+  position: fixed;
+  top: -20%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.3), transparent 70%);
+  z-index: 0;
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.bgOrb2 {
+  position: fixed;
+  bottom: -20%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.25), transparent 70%);
+  z-index: 0;
+  animation: pulseGlow 5s ease-in-out infinite reverse;
+}
+
+/* ─── Header ────────────────────────────────────────────────────── */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: linear-gradient(to bottom, rgba(14, 1, 24, 0.9) 0%, transparent 100%);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logoIcon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.7));
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.logoText {
+  font-size: 1.3rem;
+  font-weight: 800;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--white-60);
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminBtn {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white-10);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: var(--white-60);
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: all 0.25s var(--ease);
+  flex-shrink: 0;
+}
+
+.adminBtn:hover {
+  background: var(--white-30);
+  color: var(--white);
+}
+
+/* ─── Loading / Empty ───────────────────────────────────────────── */
+.loadingScreen,
+.emptyScreen {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+  padding: 40px;
+}
+
+.loadingScreen p {
+  color: var(--white-60);
+  font-size: 1rem;
+  margin-top: 12px;
+}
+
+.emptyIcon {
+  font-size: 5rem;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 20px rgba(249, 115, 22, 0.4));
+}
+
+.emptyScreen h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.emptyScreen p {
+  color: var(--white-60);
+  font-size: 1rem;
+  max-width: 320px;
+  line-height: 1.6;
+}
+
+/* ─── Scroll Container ──────────────────────────────────────────── */
+.scrollContainer {
+  position: absolute;
+  inset: 0;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  z-index: 1;
+}
+
+.scrollContainer::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Each Slide ────────────────────────────────────────────────── */
+.slide {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ─── Video Wrapper ─────────────────────────────────────────────── */
+.videoWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #000;
+}
+
+/* Native HTML5 video — fills the container, no letterboxing */
+.videoEl {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+}
+
+/* ─── No-embed (ShareChat) ──────────────────────────────────────── */
+.noembed {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border-left: 1px solid var(--glass-border);
+  border-right: 1px solid var(--glass-border);
+}
+
+.noembedIcon {
+  font-size: 4rem;
+  color: var(--orange-bright);
+  margin-bottom: 8px;
+}
+
+.noembedLabel {
+  font-size: 0.85rem;
+  color: var(--white-60);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.noembedTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--white);
+  text-align: center;
+  max-width: 280px;
+}
+
+/* ─── Side Actions ──────────────────────────────────────────────── */
+.sideActions {
+  position: absolute;
+  right: 16px;
+  bottom: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 20;
+}
+
+.actionBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--white);
+  transition: transform 0.2s var(--ease-bounce);
+}
+
+.actionBtn:hover {
+  transform: scale(1.15);
+}
+
+.actionIcon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  transition: all 0.25s var(--ease);
+}
+
+.actionBtn:hover .actionIcon {
+  background: rgba(249, 115, 22, 0.2);
+  border-color: var(--orange-bright);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+}
+
+.actionLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--white-80);
+  letter-spacing: 0.03em;
+}
+
+.heartBurst .actionIcon {
+  animation: floatUp 0.6s var(--ease-bounce) forwards;
+}
+
+/* ─── Info Overlay ──────────────────────────────────────────────── */
+.infoOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  padding: 80px 20px 28px;
+  background: linear-gradient(to top, rgba(14, 1, 24, 0.85) 0%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+.reelTitle {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--white-80);
+  line-height: 1.4;
+  max-width: 280px;
+}
+
+/* ─── Progress Dots ─────────────────────────────────────────────── */
+.progressDots {
+  position: fixed;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 60vh;
+  overflow: hidden;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--white-30);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  padding: 0;
+}
+
+.dotActive {
+  background: var(--orange-bright);
+  height: 18px;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+}
+
+/* ─── Swipe Hint ────────────────────────────────────────────────── */
+.swipeHint {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--white-60);
+  animation: fadeUp 0.5s var(--ease) 1.5s both;
+}
+
+.swipeArrow {
+  font-size: 1rem;
+  color: var(--orange-bright);
+}
+
+/* ─── Responsive ────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .videoWrapper {
+    max-width: 400px;
+    height: 90vh;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), var(--shadow-purple);
+    border: 1px solid var(--glass-border);
+    top: 5vh;
+    position: relative;
+  }
+
+  .slide {
+    padding-top: 60px;
+  }
+
+  .infoOverlay {
+    border-radius: 0 0 20px 20px;
+    max-width: 400px;
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+  }
+
+  .sideActions {
+    right: calc(50% - 240px);
+  }
+}
+
+/* ─── Liked icon state ──────────────────────────────────────────── */
+.iconLiked {
+  filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.7));
+  transform: scale(1.15);
+  display: inline-block;
+}
+
+/* ─── Comment Panel Overlay ─────────────────────────────────────── */
+.commentOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s var(--ease);
+}
+
+/* ─── Comment Panel ─────────────────────────────────────────────── */
+.commentPanel {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 100%;
+  max-width: 480px;
+  height: 70vh;
+  z-index: 300;
+  background: linear-gradient(180deg, rgba(30, 5, 51, 0.97) 0%, rgba(14, 1, 24, 0.99) 100%);
+  backdrop-filter: blur(24px);
+  border-top: 1px solid var(--glass-border);
+  border-radius: 24px 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s var(--ease-bounce);
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.commentPanelOpen {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ─── Comment Panel Header ──────────────────────────────────────── */
+.commentPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 0;
+  flex-shrink: 0;
+}
+
+.commentPanelTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.commentCloseBtn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white-10);
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  color: var(--white-60);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+
+.commentCloseBtn:hover {
+  background: var(--white-30);
+  color: var(--white);
+}
+
+/* ─── Comment Form ──────────────────────────────────────────────── */
+.commentForm {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.commentNameInput {
+  padding: 10px 14px;
+  font-size: 0.85rem;
+}
+
+.commentInputRow {
+  display: flex;
+  gap: 10px;
+}
+
+.commentTextInput {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+}
+
+.commentSubmitBtn {
+  padding: 10px 18px;
+  font-size: 1rem;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+/* ─── Comments List ─────────────────────────────────────────────── */
+.commentsList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.commentsLoading {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.commentsEmpty {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--white-30);
+  font-size: 0.9rem;
+}
+
+/* ─── Comment Item ──────────────────────────────────────────────── */
+.commentItem {
+  display: flex;
+  gap: 12px;
+  animation: fadeUp 0.3s var(--ease) both;
+}
+
+.commentAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.commentBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.commentMeta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.commentAuthor {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--white-80);
+}
+
+.commentTime {
+  font-size: 0.72rem;
+  color: var(--white-30);
+}
+
+.commentText {
+  font-size: 0.88rem;
+  color: var(--white-60);
+  line-height: 1.5;
+  word-break: break-word;
+}
+

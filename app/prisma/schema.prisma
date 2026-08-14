@@ -1,0 +1,36 @@
+// This is your Prisma schema file
+// Learn more about it at https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Reel {
+  id          Int       @id @default(autoincrement())
+  url         String    @unique
+  platform    String    // "youtube" | "instagram" | "sharechat"
+  title       String    @default("")
+  embedUrl    String    @default("")
+  videoPath   String?   // e.g. /videos/abc123.mp4 — set after download
+  thumbnail   String?   // e.g. /thumbnails/abc123.jpg
+  status      String    @default("downloading") // downloading | ready | failed
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  comments    Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  reelId    Int
+  reel      Reel     @relation(fields: [reelId], references: [id], onDelete: Cascade)
+  author    String   @default("Anonymous")
+  text      String
+  createdAt DateTime @default(now())
+}
