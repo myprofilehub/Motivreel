@@ -54,7 +54,10 @@ export async function downloadVideo(
   ];
 
   if (process.env.INSTAGRAM_SESSION_ID && url.includes("instagram.com")) {
-    cmdArgs.push(`--add-header "Cookie: sessionid=${process.env.INSTAGRAM_SESSION_ID}"`);
+    const cookieFilePath = path.join(process.cwd(), "cookies.txt");
+    const cookieContent = `.instagram.com\tTRUE\t/\tTRUE\t2000000000\tsessionid\t${process.env.INSTAGRAM_SESSION_ID}\n`;
+    fs.writeFileSync(cookieFilePath, cookieContent, { encoding: "utf-8" });
+    cmdArgs.push(`--cookies "${cookieFilePath}"`);
   }
 
   const cmd = cmdArgs.join(" ");
