@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
         { status: 409 }
       );
     }
-    return NextResponse.json({ error: "Failed to save reel" }, { status: 500 });
+    return NextResponse.json({ error: `Failed to save reel: ${err instanceof Error ? err.message : String(err)}` }, { status: 500 });
   }
 
   // 2. Kick off download in the background (don't await — respond instantly)
