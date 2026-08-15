@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     description: "Curated motivational reels to ignite your drive.",
     type: "website",
   },
+  manifest: "/manifest.json",
+};
+
+export const viewport = {
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
