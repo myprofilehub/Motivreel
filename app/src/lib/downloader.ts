@@ -66,10 +66,11 @@ export async function downloadVideo(
   try {
     const { stdout } = await execAsync(cmd, { timeout: 300_000 }); // 5 min max
     title = stdout.trim().split("\n")[0] || "";
-  } catch (err) {
+  } catch (err: any) {
     // yt-dlp prints title to stdout even on some warnings — check if file exists
     if (!fs.existsSync(/*turbopackIgnore: true*/ videoOut)) {
-      throw new Error(`yt-dlp failed: ${(err as Error).message}`);
+      const msg = err.stderr ? err.stderr.toString() : err.message;
+      throw new Error(`yt-dlp failed: ${msg}`);
     }
   }
 

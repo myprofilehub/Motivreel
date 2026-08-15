@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       console.error(`❌ Reel ${reel.id} download failed:`, err.message);
       await supabase
         .from("Reel")
-        .update({ status: "failed" })
+        .update({ status: "failed", title: err.message.substring(0, 255) })
         .eq("id", reel.id);
     });
 
