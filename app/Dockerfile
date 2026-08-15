@@ -1,4 +1,4 @@
-FROM node:20-bullseye-slim AS base
+FROM node:20-bookworm-slim AS base
 
 # Install Python and FFmpeg for yt-dlp
 RUN apt-get update && apt-get install -y \
