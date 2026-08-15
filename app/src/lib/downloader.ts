@@ -2,6 +2,7 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import path from "path";
 import fs from "fs";
+import { supabase } from "@/lib/supabase";
 
 const execAsync = promisify(exec);
 
@@ -75,6 +76,7 @@ export async function downloadVideo(
   }
 
   // yt-dlp may save thumbnail with a different extension - find it
+  let thumbFile = "";
   let thumbPath = "/thumbnails/placeholder.jpg";
   const possibleThumbs = [thumbOut, thumbOut.replace(".jpg", ".webp"), thumbOut.replace(".jpg", ".png")];
   for (const tp of possibleThumbs) {
@@ -82,21 +84,64 @@ export async function downloadVideo(
     if (fs.existsSync(/*turbopackIgnore: true*/ tp)) {
       // Rename to standard .jpg if needed
       if (tp !== thumbOut) fs.renameSync(/*turbopackIgnore: true*/ tp, thumbOut);
+      thumbFile = thumbOut;
       thumbPath = `/thumbnails/${baseName}.jpg`;
       break;
     }
   }
 
   // Also check yt-dlp's default thumbnail name pattern (it may add the video ID)
-  if (thumbPath === "/thumbnails/placeholder.jpg") {
+  if (!thumbFile) {
     const files = fs.readdirSync(/*turbopackIgnore: true*/ THUMB_DIR);
     const match = files.find((f) => f.startsWith(baseName));
-    if (match) thumbPath = `/thumbnails/${match}`;
+    if (match) {
+      thumbFile = path.join(THUMB_DIR, match);
+      thumbPath = `/thumbnails/${match}`;
+    }
   }
 
+  // 1. Upload Video to Supabase
+  let uploadedVideoUrl = `/videos/${baseName}.mp4`;
+  try {
+    const videoData = fs.readFileSync(/*turbopackIgnore: true*/ videoOut);
+    const { error: vErr } = await supabase.storage
+      .from("reels")
+      .upload(`${baseName}.mp4`, videoData, {
+        contentType: "video/mp4",
+        upsert: true,
+      });
+    if (vErr) throw vErr;
+    uploadedVideoUrl = supabase.storage.from("reels").getPublicUrl(`${baseName}.mp4`).data.publicUrl;
+  } catch (e: any) {
+    console.error("Failed to upload video to Supabase:", e.message);
+  }
+
+  // 2. Upload Thumbnail to Supabase
+  let uploadedThumbUrl = thumbPath;
+  if (thumbFile) {
+    try {
+      const thumbData = fs.readFileSync(/*turbopackIgnore: true*/ thumbFile);
+      const ext = path.extname(thumbFile).toLowerCase() || ".jpg";
+      const cType = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
+      const { error: tErr } = await supabase.storage
+        .from("reels")
+        .upload(`${baseName}${ext}`, thumbData, {
+          contentType: cType,
+          upsert: true,
+        });
+      if (tErr) throw tErr;
+      uploadedThumbUrl = supabase.storage.from("reels").getPublicUrl(`${baseName}${ext}`).data.publicUrl;
+    } catch (e: any) {
+      console.error("Failed to upload thumbnail to Supabase:", e.message);
+    }
+  }
+
+  // 3. Delete temporary local files
+  deleteVideoFiles(reelId);
+
   return {
-    videoPath: `/videos/${baseName}.mp4`,
-    thumbnail: thumbPath,
+    videoPath: uploadedVideoUrl,
+    thumbnail: uploadedThumbUrl,
     title,
   };
 }
@@ -110,6 +155,7 @@ export function deleteVideoFiles(reelId: number) {
     path.join(VIDEO_DIR, `${baseName}.mp4`),
     path.join(THUMB_DIR, `${baseName}.jpg`),
     path.join(THUMB_DIR, `${baseName}.webp`),
+    path.join(THUMB_DIR, `${baseName}.png`),
   ];
   for (const f of toDelete) {
     try {

@@ -74,6 +74,11 @@ export default function HomePage() {
     try {
       const res = await fetch("/api/reels");
       const data = await res.json();
+      if (!Array.isArray(data)) {
+        console.error("API did not return an array:", data);
+        setReels([]);
+        return [];
+      }
       setReels(data);
       return data as Reel[];
     } catch {
