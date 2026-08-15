@@ -105,13 +105,13 @@ export async function downloadVideo(
   try {
     const videoData = fs.readFileSync(/*turbopackIgnore: true*/ videoOut);
     const { error: vErr } = await supabase.storage
-      .from("reels")
+      .from("Reels")
       .upload(`${baseName}.mp4`, videoData, {
         contentType: "video/mp4",
         upsert: true,
       });
     if (vErr) throw vErr;
-    uploadedVideoUrl = supabase.storage.from("reels").getPublicUrl(`${baseName}.mp4`).data.publicUrl;
+    uploadedVideoUrl = supabase.storage.from("Reels").getPublicUrl(`${baseName}.mp4`).data.publicUrl;
   } catch (e: any) {
     console.error("Failed to upload video to Supabase:", e.message);
   }
@@ -124,13 +124,13 @@ export async function downloadVideo(
       const ext = path.extname(thumbFile).toLowerCase() || ".jpg";
       const cType = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
       const { error: tErr } = await supabase.storage
-        .from("reels")
+        .from("Reels")
         .upload(`${baseName}${ext}`, thumbData, {
           contentType: cType,
           upsert: true,
         });
       if (tErr) throw tErr;
-      uploadedThumbUrl = supabase.storage.from("reels").getPublicUrl(`${baseName}${ext}`).data.publicUrl;
+      uploadedThumbUrl = supabase.storage.from("Reels").getPublicUrl(`${baseName}${ext}`).data.publicUrl;
     } catch (e: any) {
       console.error("Failed to upload thumbnail to Supabase:", e.message);
     }
