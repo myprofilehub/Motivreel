@@ -43,6 +43,9 @@ export default function HomePage() {
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
   const [heartBurst, setHeartBurst] = useState<number | null>(null);
 
+  // Audio state
+  const [isMuted, setIsMuted] = useState(true);
+
   // Comments panel
   const [commentOpen, setCommentOpen] = useState(false);
   const [commentReelId, setCommentReelId] = useState<number | null>(null);
@@ -302,14 +305,39 @@ export default function HomePage() {
                     src={reel.videoPath!}
                     poster={reel.thumbnail || undefined}
                     loop
+                    muted={isMuted}
                     playsInline
                     controls={false}
                     preload={i === activeIndex ? "auto" : "none"}
                     onClick={(e) => {
                       const v = e.currentTarget;
-                      v.paused ? v.play() : v.pause();
+                      if (v.paused) v.play();
+                      else v.pause();
                     }}
                   />
+                  {/* Mute Toggle Button */}
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMuted(!isMuted);
+                    }}
+                    style={{
+                      position: 'absolute',
+                      top: '20px',
+                      right: '20px',
+                      background: 'rgba(0,0,0,0.5)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: '40px',
+                      height: '40px',
+                      fontSize: '20px',
+                      cursor: 'pointer',
+                      zIndex: 10
+                    }}
+                  >
+                    {isMuted ? '🔇' : '🔊'}
+                  </button>
                 </div>
 
                 {/* Side actions */}
